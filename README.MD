@@ -112,3 +112,47 @@ output "ip" {
   value = aws_eip.ip.public_ip
 }
 ```
+
+### modules
+
+- Modules are self-contained packages of Terraform configurations that are managed as a group.
+- [Terraform Registry ](https://registry.terraform.io/) includes a directory of ready-to-use modules for various common purposes
+- After adding new modules you need to rerun ``terraform init`` 
+- Output also works on module variables
+
+Example:
+```yaml
+module "consul" {
+  source      = "hashicorp/consul/aws"
+  version = "0.7.3" # optional
+  num_servers = "3"
+}
+```
+
+### Remote State Storage
+
+- Use **remote backends** to store statedata  on a server.
+- There are different backends. Terraform Cloud is one of such.
+- 
+
+```yaml
+terraform {
+  backend "remote" {
+    organization = "<ORG_NAME>"
+
+    workspaces {
+      name = "Example-Workspace"
+    }
+  }
+}
+```
+
+### additional resources
+
+[Further Tutorials](https://learn.hashicorp.com/terraform#operations-and-development) - also for gcp or azure
+
+[Documentation](https://www.terraform.io/docs/index.html) - The documentation is an in-depth reference guide to all the features of Terraform, including technical details about the internals of how Terraform operates.
+
+[Examples](https://www.terraform.io/intro/examples/index.html) - The examples have more full featured configuration files, showing some of the possibilities with Terraform.
+
+[Import](https://www.terraform.io/docs/import/index.html) - The import section of the documentation covers importing existing infrastructure into Terraform.
