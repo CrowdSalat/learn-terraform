@@ -3,7 +3,6 @@
 [Tutorial from hashicorp](https://learn.hashicorp.com/terraform/getting-started)
 
 ## build Infrastructure
-
 ---
 **_NOTE_**
 
@@ -25,4 +24,14 @@ Therefore install [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/cli
 terraform init # initializes various local settings 
 terraform fmt # format all files in directory
 terraform validate # validate file
+
+terraform apply # checks diff between config file and real infrastructure and creates execution plan to elimiate this diff
+
+terraform state # The state of the infrastructure is saved in terraform.tfstate file. It can be manually modified by this command.
 ```
+
+The next step is adding **provisioning**, which can be some sort of initialisation or software provisioning.
+
+[source](https://learn.hashicorp.com/terraform/getting-started/build)
+
+### Change Infrastructure
