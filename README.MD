@@ -35,3 +35,5 @@ The next step is adding **provisioning**, which can be some sort of initialisati
 [source](https://learn.hashicorp.com/terraform/getting-started/build)
 
 ### Change Infrastructure
+
+Just change tf files and rerun ```terraform apply``.
