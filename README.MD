@@ -47,4 +47,14 @@ There are explicit and implicit dependencies for creating a order of actions.
 - explicit: with the **depends_on** field of a resource.
 - implicit: e.g. usage of ``instance = aws_instance.example.id``
 
-Resources which are not dependant on others can be build in parallel. 
+Resources which are not dependant on others can be build in parallel.
+
+### Provisioning
+
+- Only necessary if you do not use image-based infrastructure.
+- provisioner are defined inside a resource and have a type like: ``local-exec`` or ``remote-exec``
+- Are for bootstraping component (on creation) not to change software on a running component.
+- **You need to destroy the infrastructure if the reosurces arleady exist, so the reosurces will be recreated and the bootstrapping logic of the provisioner can be done.**
+- If a resource successfully creates but fails during provisioning, Terraform will error and mark the resource as "tainted".
+- Terraform tries to destroy and recreate tainted resources every time *apply* ist called.
+- ``terrafirm taint <resource.id>`` manually marks a resource as tainted.
