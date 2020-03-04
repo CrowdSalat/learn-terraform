@@ -38,4 +38,13 @@ Just change tf files and rerun ```terraform apply``.
 
 ### Destroy Infrastructure
 
-To completely destroy the Terraform-managed infrastructure call ``terraform destroy`` 
+To completely destroy the Terraform-managed infrastructure call ``terraform destroy``.
+
+### Resource Dependencies
+
+There are explicit and implicit dependencies for creating a order of actions.
+
+- explicit: with the **depends_on** field of a resource.
+- implicit: e.g. usage of ``instance = aws_instance.example.id``
+
+Resources which are not dependant on others can be build in parallel. 
