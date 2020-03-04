@@ -60,7 +60,7 @@ Resources which are not dependant on others can be build in parallel.
 - ``terrafirm taint <resource.id>`` manually marks a resource as tainted.
 
 
-### Variables
+### Input Variables
 
 - variables are defined in a variables.tf file and may be assigned a default value
 - variables are accessed with a **var.<variable_name>** notation.
@@ -99,5 +99,16 @@ use:
 resource "aws_instance" "example" {
   ami           = var.amis["us-east-1"]
   instance_type = "t2.micro"
+}
+```
+
+### Output Variables
+`
+Output blocks can be pasted in any of the *.tf files. Output are printed after ``terraform output`` or ``terraform apply`` run.
+
+Example:
+```yaml
+output "ip" {
+  value = aws_eip.ip.public_ip
 }
 ```
