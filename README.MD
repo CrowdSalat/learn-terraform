@@ -58,3 +58,46 @@ Resources which are not dependant on others can be build in parallel.
 - If a resource successfully creates but fails during provisioning, Terraform will error and mark the resource as "tainted".
 - Terraform tries to destroy and recreate tainted resources every time *apply* ist called.
 - ``terrafirm taint <resource.id>`` manually marks a resource as tainted.
+
+
+### Variables
+
+- variables are defined in a variables.tf file and may be assigned a default value
+- variables are accessed with a **var.<variable_name>** notation.
+- variables can be overwritten in console: `` terraform apply -var 'region=us-east-2'
+- variables can also be overwritten from file. Terraform search automatically for *terraform.tfvars* or **.auto.tfvars* files. Alternativly you can pass a file in console `` terraform apply -var-file 'production.tfvars'.
+- variables can be overwritten by enviroment variables. They need to start with **TF_VAR_**<name of variable to overwrite>. Environment variables are limited tostring-type variables (can not use List and map type variables).
+- variables which are unspecified are asked for after executing ``terraform apply``
+
+Possibilities in a nutshell:
+
+- preset in variables.tf per *default* field
+- overwrite console (``-var 'var_name=var_value'``)
+- overwrite in terraform.tfvars file
+- overwrite in *.tfvars file and  (``-var-file 'production.tfvars'``)
+- overwrite in enviromental variables (TF_VARS_)
+
+Lists:
+
+define: ``variable "cidrs" { type = list }``
+init: ``cidrs = [ "10.0.0.0/16", "10.1.0.0/16" ]``
+
+Maps:
+define and init:
+```yaml
+variable "amis" {
+  type = "map"
+  default = {
+    "us-east-1" = "ami-b374d5a5"
+    "us-west-2" = "ami-4b32be2b"
+  }
+}
+```
+
+use:
+```yaml
+resource "aws_instance" "example" {
+  ami           = var.amis["us-east-1"]
+  instance_type = "t2.micro"
+}
+```
