@@ -32,8 +32,10 @@ terraform state # The state of the infrastructure is saved in terraform.tfstate 
 
 The next step is adding **provisioning**, which can be some sort of initialisation or software provisioning.
 
-[source](https://learn.hashicorp.com/terraform/getting-started/build)
-
 ### Change Infrastructure
 
 Just change tf files and rerun ```terraform apply``.
+
+### Destroy Infrastructure
+
+To completely destroy the Terraform-managed infrastructure call ``terraform destroy`` 
