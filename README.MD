@@ -84,7 +84,7 @@ init: ``cidrs = [ "10.0.0.0/16", "10.1.0.0/16" ]``
 
 Maps:
 define and init:
-```yaml
+```terraform
 variable "amis" {
   type = "map"
   default = {
@@ -95,7 +95,7 @@ variable "amis" {
 ```
 
 use:
-```yaml
+```terraform
 resource "aws_instance" "example" {
   ami           = var.amis["us-east-1"]
   instance_type = "t2.micro"
@@ -107,7 +107,7 @@ resource "aws_instance" "example" {
 Output blocks can be pasted in any of the *.tf files. Output are printed after ``terraform output`` or ``terraform apply`` run.
 
 Example:
-```yaml
+```terraform
 output "ip" {
   value = aws_eip.ip.public_ip
 }
@@ -121,7 +121,7 @@ output "ip" {
 - Output also works on module variables
 
 Example:
-```yaml
+```terraform
 module "consul" {
   source      = "hashicorp/consul/aws"
   version = "0.7.3" # optional
@@ -133,18 +133,12 @@ module "consul" {
 
 - Use **remote backends** to store statedata  on a server.
 - There are different backends. Terraform Cloud is one of such.
-- 
 
-```yaml
-terraform {
-  backend "remote" {
-    organization = "<ORG_NAME>"
-
-    workspaces {
-      name = "Example-Workspace"
-    }
+Google cloud backend example:
+```terraform
+ backend "gcs" {
+    bucket = "existing-bucket-name"
   }
-}
 ```
 
 ### additional resources
