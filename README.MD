@@ -150,3 +150,130 @@ Google cloud backend example:
 [Examples](https://www.terraform.io/intro/examples/index.html) - The examples have more full featured configuration files, showing some of the possibilities with Terraform.
 
 [Import](https://www.terraform.io/docs/import/index.html) - The import section of the documentation covers importing existing infrastructure into Terraform.
+
+
+## cookbooks
+
+### Google Cloud Function - source code management
+
+./cookbooks/google_cloud_function.tf
+
+```terraform
+provider "google" {
+  region      = ""
+  credentials = ""
+  project     = ""
+}
+
+# create bucket for saving source code
+resource "google_storage_bucket" "bucket" {
+  name = "cloud-function-sources-bucket"
+}
+
+# zip local source
+data "archive_file" "local_source" {
+  type        = "zip"
+  source_dir  = "../source_folder"
+  output_path = "./source_for_one_function.zip"
+  
+}
+
+# copy source zip to bucket
+resource "google_storage_bucket_object" "gcs_source_cleanupfirestore" {
+  name   = "cleanupfirestore.zip"
+  bucket = "${google_storage_bucket.bucket.name}"
+  source = "${data.archive_file.local_source_cleanupfirestore.output_path}"
+}
+
+# create cloud function and use code from source code zip file in bucket
+resource "google_cloudfunctions_function" "cleanupfirestore" {
+  name    = "tf-cloud-funciton"
+  runtime = "nodejs10"
+  entry_point = "cleanUpFirestore"
+  trigger_http = true
+  source_archive_bucket = "${google_storage_bucket.bucket.name}"
+  source_archive_object = "${google_storage_bucket_object.gcs_source_cleanupfirestore.name}"
+}
+```
+
+### Google Cloud Function + PubSub
+
+./cookbooks/google_cloud_function_pubsub.tf
+
+```terraform
+provider "google" {
+  region      = ""
+  credentials = ""
+  project     = ""
+}
+
+
+# PubSub
+resource "google_pubsub_topic" "ps_name" {
+  name = "topic-name" 
+}
+
+# create bucket for saving source code
+resource "google_storage_bucket" "bucket" {
+  name = "cloud-function-sources-bucket"
+}
+
+# zip local source
+data "archive_file" "local_source" {
+  type        = "zip"
+  source_dir  = "../source_folder"
+  output_path = "./source_for_one_function.zip"
+  
+}
+
+# copy source zip to bucket
+resource "google_storage_bucket_object" "gcs_source_cleanupfirestore" {
+  name   = "cleanupfirestore.zip"
+  bucket = "${google_storage_bucket.bucket.name}"
+  source = "${data.archive_file.local_source_cleanupfirestore.output_path}"
+}
+
+# create cloud function and use code from source code zip file in bucket
+# use pubsub as trigger
+resource "google_cloudfunctions_function" "cleanupfirestore" {
+  name    = "tf-cloud-funciton"
+  runtime = "nodejs10"
+  entry_point = "cleanUpFirestore"
+   event_trigger {
+    event_type = "google.pubsub.topic.publish"
+    resource   = "${google_pubsub_topic.ps_name.id}"
+  }
+  source_archive_bucket = "${google_storage_bucket.bucket.name}"
+  source_archive_object = "${google_storage_bucket_object.gcs_source_cleanupfirestore.name}"
+}
+```
+
+### Google Scheduler + PubSub
+
+./cookbooks/google_scheduler_pubsub.tf
+
+```terraform
+provider "google" {
+  region      = ""
+  credentials = ""
+  project     = ""
+}
+
+# PubSub
+resource "google_pubsub_topic" "ps_name" {
+  name = "topic-name"
+}
+
+# Scheduler
+resource "google_cloud_scheduler_job" "scheduler" {
+  name        = "scheduler name"
+  description = "desc"
+  schedule    = "0 4 1 * *"
+  time_zone   = "Europe/Berlin"
+  pubsub_target {
+    # topic.id is the topic's full resource name.
+    topic_name = "${google_pubsub_topic.ps_name.id}"
+    data       = "${base64encode("meaningful message")}"
+  }
+}
+```
