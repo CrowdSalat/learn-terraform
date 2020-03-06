@@ -121,6 +121,7 @@ output "ip" {
 - After adding new modules you need to rerun ``terraform init`` 
 - variables.tf: input parameters for the module
 - outputs.tf: return values of the module
+- Providers should be configured by the user of the module and not by the module itself.
 
 Example:
 ```terraform
