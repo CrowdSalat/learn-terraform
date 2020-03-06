@@ -116,9 +116,11 @@ output "ip" {
 ### modules
 
 - Modules are self-contained packages of Terraform configurations that are managed as a group.
+- any set of Terraform configuration files in a folder is a module.
 - [Terraform Registry ](https://registry.terraform.io/) includes a directory of ready-to-use modules for various common purposes
 - After adding new modules you need to rerun ``terraform init`` 
-- Output also works on module variables
+- variables.tf: input parameters for the module
+- outputs.tf: return values of the module
 
 Example:
 ```terraform
