@@ -122,6 +122,9 @@ output "ip" {
 - variables.tf: input parameters for the module
 - outputs.tf: return values of the module
 - Providers should be configured by the user of the module and not by the module itself.
+- ``terraform get`` will download modules
+- Modules reside under .terraform/modules/<the module alias given in root tf skript e.g. consul>
+- if the module is downloaded from a [git repository](https://www.terraform.io/docs/modules/sources.html#generic-git-repository) the whole Repository lies in the module folder.
 
 Example:
 ```terraform
