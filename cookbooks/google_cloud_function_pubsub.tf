@@ -24,22 +24,22 @@ data "archive_file" "local_source" {
 }
 
 # copy source zip to bucket
-resource "google_storage_bucket_object" "gcs_source_cleanupfirestore" {
+resource "google_storage_bucket_object" "gcs_source" {
   name   = "cleanupfirestore.zip"
   bucket = "${google_storage_bucket.bucket.name}"
-  source = "${data.archive_file.local_source_cleanupfirestore.output_path}"
+  source = "${data.archive_file.local_source.output_path}"
 }
 
 # create cloud function and use code from source code zip file in bucket
 # use pubsub as trigger
-resource "google_cloudfunctions_function" "cleanupfirestore" {
+resource "google_cloudfunctions_function" "cf_doThings" {
   name    = "tf-cloud-funciton"
   runtime = "nodejs10"
-  entry_point = "cleanUpFirestore"
+  entry_point = "receiveMessage"
    event_trigger {
     event_type = "google.pubsub.topic.publish"
     resource   = "${google_pubsub_topic.ps_name.id}"
   }
   source_archive_bucket = "${google_storage_bucket.bucket.name}"
-  source_archive_object = "${google_storage_bucket_object.gcs_source_cleanupfirestore.name}"
+  source_archive_object = "${google_storage_bucket_object.gcs_source.name}"
 }
